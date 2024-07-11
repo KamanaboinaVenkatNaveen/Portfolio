@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .calculator {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .display {
+            background-color: #222;
+            color: #fff;
+            text-align: right;
+            padding: 20px;
+            font-size: 2em;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .btn {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .btn:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="btn" data-value="7">7</button>
+            <button class="btn" data-value="8">8</button>
+            <button class="btn" data-value="9">9</button>
+            <button class="btn" data-value="/">/</button>
+            <button class="btn" data-value="4">4</button>
+            <button class="btn" data-value="5">5</button>
+            <button class="btn" data-value="6">6</button>
+            <button class="btn" data-value="*">*</button>
+            <button class="btn" data-value="1">1</button>
+            <button class="btn" data-value="2">2</button>
+            <button class="btn" data-value="3">3</button>
+            <button class="btn" data-value="-">-</button>
+            <button class="btn" data-value="0">0</button>
+            <button class="btn" data-value=".">.</button>
+            <button class="btn" data-value="=">=</button>
+            <button class="btn" data-value="+">+</button>
+            <button class="btn" data-value="C">C</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const display = document.getElementById('display');
+            const buttons = document.querySelectorAll('.btn');
+            let currentInput = '';
+            let operator = '';
+            let operand1 = '';
+            let operand2 = '';
+            let result = '';
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.getAttribute('data-value');
+                    
+                    if (value === 'C') {
+                        currentInput = '';
+                        operator = '';
+                        operand1 = '';
+                        operand2 = '';
+                        result = '';
+                        display.innerText = '0';
+                        return;
+                    }
+
+                    if (value === '=') {
+                        operand2 = currentInput;
+                        result = calculate(operand1, operator, operand2);
+                        display.innerText = result;
+                        operand1 = result;
+                        currentInput = '';
+                        operator = '';
+                        return;
+                    }
+
+                    if (['+', '-', '*', '/'].includes(value)) {
+                        if (operator === '') {
+                            operand1 = currentInput;
+                            operator = value;
+                            currentInput = '';
+                        } else {
+                            operand2 = currentInput;
+                            result = calculate(operand1, operator, operand2);
+                            display.innerText = result;
+                            operand1 = result;
+                            operator = value;
+                            currentInput = '';
+                        }
+                        return;
+                    }
+
+                    currentInput += value;
+                    display.innerText = currentInput;
+                });
+            });
+
+            function calculate(op1, operator, op2) {
+                let result;
+                switch (operator) {
+                    case '+':
+                        result = parseFloat(op1) + parseFloat(op2);
+                        break;
+                    case '-':
+                        result = parseFloat(op1) - parseFloat(op2);
+                        break;
+                    case '*':
+                        result = parseFloat(op1) * parseFloat(op2);
+                        break;
+                    case '/':
+                        result = parseFloat(op1) / parseFloat(op2);
+                        break;
+                    default:
+                        result = 0;
+                        break;
+                }
+                return result;
+            }
+        });
+    </script>
+</body>
+</html>
